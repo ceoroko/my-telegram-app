@@ -4,220 +4,33 @@
     <title>Игра-кликер</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .container {
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .header {
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .stats {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-
-        .score {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #FFD700;
-        }
-
-        .level {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-        }
-
-        .click-power {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-
-        .click-area {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 25px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .click-area:active {
-            transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .click-button {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(45deg, #FF6B6B, #FFD93D);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            font-size: 1.5rem;
-            font-weight: bold;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            user-select: none;
-        }
-
-        .upgrades {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .upgrade {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .upgrade:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .upgrade:active {
-            transform: scale(0.95);
-        }
-
-        .upgrade h3 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .upgrade p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .cost {
-            color: #FFD700;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            font-size: 1.5rem;
-            font-weight: bold;
-            animation: floatUp 1s ease-out forwards;
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-50px) scale(0.5);
-                opacity: 0;
-            }
-        }
-
-        .achievement {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px 25px;
-            border-radius: 10px;
-            border-left: 4px solid #FFD700;
-            animation: slideDown 0.5s ease-out;
-            z-index: 1000;
-        }
-
-        @keyframes slideDown {
-            0% {
-                top: -100px;
-                opacity: 0;
-            }
-            100% {
-                top: 20px;
-                opacity: 1;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Экран меню -->
+    <div class="screen" id="menuScreen">
         <div class="header">
             <h1>🚀 Кликер</h1>
-            <p>Нажимай на кнопку и улучшай свои возможности!</p>
+            <p>Нажимай, улучшай, становись королём кликов!</p>
         </div>
+
+        <div class="menu-buttons">
+            <button class="menu-btn play" onclick="showGame()">🎮 Играть</button>
+            <button class="menu-btn" onclick="showStats()">📊 Статистика</button>
+            <button class="menu-btn" onclick="showInstructions()">❓ Как играть</button>
+        </div>
+
+        <div class="user-stats" id="userStats" style="display: none;">
+            <h3>Ваша статистика:</h3>
+            <p>Максимальный счёт: <span id="maxScore">0</span></p>
+            <p>Максимальный уровень: <span id="maxLevel">1</span></p>
+        </div>
+    </div>
+
+    <!-- Экран игры -->
+    <div class="screen" id="gameScreen">
+        <button class="back-btn" onclick="showMenu()">← Назад в меню</button>
 
         <div class="stats">
             <div class="score" id="score">0</div>
@@ -258,6 +71,29 @@
         </div>
     </div>
 
+    <!-- Экран инструкций -->
+    <div class="screen" id="instructionsScreen">
+        <button class="back-btn" onclick="showMenu()">← Назад</button>
+        
+        <div class="header">
+            <h1>❓ Как играть</h1>
+        </div>
+
+        <div class="stats">
+            <h3>Основные правила:</h3>
+            <p>1. 🔘 Нажимайте на центральную кнопку для получения очков</p>
+            <p>2. ⬆️ Повышайте уровень каждые 100 очков</p>
+            <p>3. 🛠️ Покупайте улучшения для увеличения силы клика</p>
+            <p>4. 💾 Сохраняйте прогресс</p>
+            
+            <h3>Улучшения:</h3>
+            <p>💪 <strong>Усилитель</strong> - +1 к силе клика</p>
+            <p>⚡ <strong>Автокликер</strong> - автоматические клики</p>
+            <p>🎯 <strong>Умножитель</strong> - x2 к силе клика</p>
+            <p>🌟 <strong>Мега-буст</strong> - x5 к силе клика</p>
+        </div>
+    </div>
+
     <script>
         // Инициализация Telegram Web App
         Telegram.WebApp.ready();
@@ -269,6 +105,8 @@
         let level = 1;
         let autoClicker = 0;
         let autoClickInterval = null;
+        let maxScore = 0;
+        let maxLevel = 1;
 
         // Стоимость улучшений
         const upgrades = {
@@ -285,7 +123,53 @@
         const clickArea = document.getElementById('clickArea');
         const clickButton = document.getElementById('clickButton');
 
-        // Функция обновления интерфейса
+        // Функции переключения экранов
+        function showScreen(screenId) {
+            // Скрыть все экраны
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.style.display = 'none';
+            });
+            
+            // Показать нужный экран
+            document.getElementById(screenId).style.display = 'flex';
+        }
+
+        function showMenu() {
+            stopAutoClicker();
+            saveGame();
+            updateStats();
+            showScreen('menuScreen');
+        }
+
+        function showGame() {
+            loadGame();
+            startAutoClicker();
+            showScreen('gameScreen');
+        }
+
+        function showStats() {
+            updateStats();
+            document.getElementById('userStats').style.display = 'block';
+        }
+
+        function showInstructions() {
+            showScreen('instructionsScreen');
+        }
+
+        // Функция обновления статистики в меню
+        function updateStats() {
+            const saved = localStorage.getItem('clickerGame');
+            if (saved) {
+                const gameData = JSON.parse(saved);
+                maxScore = gameData.score || 0;
+                maxLevel = gameData.level || 1;
+            }
+            
+            document.getElementById('maxScore').textContent = maxScore;
+            document.getElementById('maxLevel').textContent = maxLevel;
+        }
+
+        // Функция обновления игрового интерфейса
         function updateUI() {
             scoreElement.textContent = score;
             levelElement.textContent = level;
@@ -327,8 +211,10 @@
             const newLevel = Math.floor(score / 100) + 1;
             if (newLevel > level) {
                 level = newLevel;
+                if (level > maxLevel) maxLevel = level;
                 showAchievement(`🎉 Достигнут уровень ${level}!`);
             }
+            if (score > maxScore) maxScore = score;
         }
 
         // Показать достижение
@@ -392,6 +278,13 @@
             }, 1000);
         }
 
+        function stopAutoClicker() {
+            if (autoClickInterval) {
+                clearInterval(autoClickInterval);
+                autoClickInterval = null;
+            }
+        }
+
         // Сохранение игры
         function saveGame() {
             const gameData = {
@@ -399,7 +292,9 @@
                 clickPower,
                 level,
                 autoClicker,
-                upgrades
+                upgrades,
+                maxScore,
+                maxLevel
             };
             localStorage.setItem('clickerGame', JSON.stringify(gameData));
             showAchievement('💾 Игра сохранена!');
@@ -414,6 +309,8 @@
                 clickPower = gameData.clickPower || 1;
                 level = gameData.level || 1;
                 autoClicker = gameData.autoClicker || 0;
+                maxScore = gameData.maxScore || 0;
+                maxLevel = gameData.maxLevel || 1;
                 
                 if (gameData.upgrades) {
                     Object.keys(upgrades).forEach(key => {
@@ -423,7 +320,6 @@
                     });
                 }
                 
-                startAutoClicker();
                 updateUI();
                 showAchievement('🎮 Игра загружена!');
             }
@@ -443,10 +339,7 @@
                 upgrades.multiplier.cost = 100;
                 upgrades.megaBoost.cost = 500;
                 
-                if (autoClickInterval) {
-                    clearInterval(autoClickInterval);
-                    autoClickInterval = null;
-                }
+                stopAutoClicker();
                 
                 localStorage.removeItem('clickerGame');
                 updateUI();
@@ -465,8 +358,8 @@
         document.getElementById('saveBtn').addEventListener('click', saveGame);
         document.getElementById('resetBtn').addEventListener('click', resetGame);
 
-        // Загрузка сохраненной игры при запуске
-        loadGame();
+        // Показать меню при загрузке
+        showMenu();
     </script>
 </body>
 </html>
