@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Игра-кликер</title>
+    <title>Мини-приложение</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
@@ -11,63 +12,12 @@
     <!-- Экран меню -->
     <div class="screen" id="menuScreen">
         <div class="header">
-            <h1>🚀 Кликер</h1>
-            <p>Нажимай, улучшай, становись королём кликов!</p>
+            <h1>🚀 Мое приложение</h1>
+            <p>Добро пожаловать в мини-приложение!</p>
         </div>
 
         <div class="menu-buttons">
-            <button class="menu-btn play" onclick="showGame()">🎮 Играть</button>
-            <button class="menu-btn" onclick="showStats()">📊 Статистика</button>
             <button class="menu-btn" onclick="showInstructions()">❓ Как играть</button>
-        </div>
-
-        <div class="user-stats" id="userStats" style="display: none;">
-            <h3>Ваша статистика:</h3>
-            <p>Максимальный счёт: <span id="maxScore">0</span></p>
-            <p>Максимальный уровень: <span id="maxLevel">1</span></p>
-        </div>
-    </div>
-
-    <!-- Экран игры -->
-    <div class="screen" id="gameScreen">
-        <button class="back-btn" onclick="showMenu()">← Назад в меню</button>
-
-        <div class="stats">
-            <div class="score" id="score">0</div>
-            <div class="level">Уровень: <span id="level">1</span></div>
-            <div class="click-power">Сила клика: <span id="clickPower">1</span></div>
-        </div>
-
-        <div class="click-area" id="clickArea">
-            <div class="click-button" id="clickButton">КЛИК!</div>
-        </div>
-
-        <div class="upgrades">
-            <div class="upgrade" id="upgrade1">
-                <h3>💪 Усилитель</h3>
-                <p>+1 к силе клика</p>
-                <div class="cost" id="cost1">Стоимость: 10</div>
-            </div>
-            <div class="upgrade" id="upgrade2">
-                <h3>⚡ Автокликер</h3>
-                <p>Автоматические клики</p>
-                <div class="cost" id="cost2">Стоимость: 50</div>
-            </div>
-            <div class="upgrade" id="upgrade3">
-                <h3>🎯 Умножитель</h3>
-                <p>x2 к силе клика</p>
-                <div class="cost" id="cost3">Стоимость: 100</div>
-            </div>
-            <div class="upgrade" id="upgrade4">
-                <h3>🌟 Мега-буст</h3>
-                <p>x5 к силе клика</p>
-                <div class="cost" id="cost4">Стоимость: 500</div>
-            </div>
-        </div>
-
-        <div class="buttons">
-            <button id="saveBtn">💾 Сохранить</button>
-            <button id="resetBtn">🔄 Сбросить</button>
         </div>
     </div>
 
@@ -80,17 +30,7 @@
         </div>
 
         <div class="stats">
-            <h3>Основные правила:</h3>
-            <p>1. 🔘 Нажимайте на центральную кнопку для получения очков</p>
-            <p>2. ⬆️ Повышайте уровень каждые 100 очков</p>
-            <p>3. 🛠️ Покупайте улучшения для увеличения силы клика</p>
-            <p>4. 💾 Сохраняйте прогресс</p>
-            
-            <h3>Улучшения:</h3>
-            <p>💪 <strong>Усилитель</strong> - +1 к силе клика</p>
-            <p>⚡ <strong>Автокликер</strong> - автоматические клики</p>
-            <p>🎯 <strong>Умножитель</strong> - x2 к силе клика</p>
-            <p>🌟 <strong>Мега-буст</strong> - x5 к силе клика</p>
+            <!-- Контент удален по требованию -->
         </div>
     </div>
 
@@ -98,30 +38,6 @@
         // Инициализация Telegram Web App
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
-
-        // Игровые переменные
-        let score = 0;
-        let clickPower = 1;
-        let level = 1;
-        let autoClicker = 0;
-        let autoClickInterval = null;
-        let maxScore = 0;
-        let maxLevel = 1;
-
-        // Стоимость улучшений
-        const upgrades = {
-            power: { cost: 10, increase: 1 },
-            autoClicker: { cost: 50, increase: 1 },
-            multiplier: { cost: 100, increase: 2 },
-            megaBoost: { cost: 500, increase: 5 }
-        };
-
-        // Элементы DOM
-        const scoreElement = document.getElementById('score');
-        const levelElement = document.getElementById('level');
-        const clickPowerElement = document.getElementById('clickPower');
-        const clickArea = document.getElementById('clickArea');
-        const clickButton = document.getElementById('clickButton');
 
         // Функции переключения экранов
         function showScreen(screenId) {
@@ -135,228 +51,12 @@
         }
 
         function showMenu() {
-            stopAutoClicker();
-            saveGame();
-            updateStats();
             showScreen('menuScreen');
-        }
-
-        function showGame() {
-            loadGame();
-            startAutoClicker();
-            showScreen('gameScreen');
-        }
-
-        function showStats() {
-            updateStats();
-            document.getElementById('userStats').style.display = 'block';
         }
 
         function showInstructions() {
             showScreen('instructionsScreen');
         }
-
-        // Функция обновления статистики в меню
-        function updateStats() {
-            const saved = localStorage.getItem('clickerGame');
-            if (saved) {
-                const gameData = JSON.parse(saved);
-                maxScore = gameData.score || 0;
-                maxLevel = gameData.level || 1;
-            }
-            
-            document.getElementById('maxScore').textContent = maxScore;
-            document.getElementById('maxLevel').textContent = maxLevel;
-        }
-
-        // Функция обновления игрового интерфейса
-        function updateUI() {
-            scoreElement.textContent = score;
-            levelElement.textContent = level;
-            clickPowerElement.textContent = clickPower;
-            
-            // Обновляем стоимость улучшений
-            document.getElementById('cost1').textContent = `Стоимость: ${upgrades.power.cost}`;
-            document.getElementById('cost2').textContent = `Стоимость: ${upgrades.autoClicker.cost}`;
-            document.getElementById('cost3').textContent = `Стоимость: ${upgrades.multiplier.cost}`;
-            document.getElementById('cost4').textContent = `Стоимость: ${upgrades.megaBoost.cost}`;
-        }
-
-        // Функция клика
-        function handleClick() {
-            score += clickPower;
-            createParticle(clickPower);
-            checkLevelUp();
-            updateUI();
-        }
-
-        // Создание партиклов (эффектов чисел)
-        function createParticle(value) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.textContent = `+${value}`;
-            particle.style.color = '#FFD700';
-            particle.style.left = `${clickArea.offsetLeft + clickArea.offsetWidth / 2}px`;
-            particle.style.top = `${clickArea.offsetTop + clickArea.offsetHeight / 2}px`;
-            
-            document.body.appendChild(particle);
-            
-            setTimeout(() => {
-                particle.remove();
-            }, 1000);
-        }
-
-        // Проверка повышения уровня
-        function checkLevelUp() {
-            const newLevel = Math.floor(score / 100) + 1;
-            if (newLevel > level) {
-                level = newLevel;
-                if (level > maxLevel) maxLevel = level;
-                showAchievement(`🎉 Достигнут уровень ${level}!`);
-            }
-            if (score > maxScore) maxScore = score;
-        }
-
-        // Показать достижение
-        function showAchievement(text) {
-            const achievement = document.createElement('div');
-            achievement.className = 'achievement';
-            achievement.textContent = text;
-            
-            document.body.appendChild(achievement);
-            
-            setTimeout(() => {
-                achievement.remove();
-            }, 3000);
-        }
-
-        // Функции улучшений
-        function buyUpgrade(type) {
-            const upgrade = upgrades[type];
-            
-            if (score >= upgrade.cost) {
-                score -= upgrade.cost;
-                
-                switch(type) {
-                    case 'power':
-                        clickPower += upgrade.increase;
-                        break;
-                    case 'autoClicker':
-                        autoClicker += upgrade.increase;
-                        startAutoClicker();
-                        break;
-                    case 'multiplier':
-                        clickPower *= upgrade.increase;
-                        break;
-                    case 'megaBoost':
-                        clickPower *= upgrade.increase;
-                        break;
-                }
-                
-                // Увеличиваем стоимость улучшения
-                upgrade.cost = Math.floor(upgrade.cost * 1.5);
-                
-                updateUI();
-                showAchievement('✅ Улучшение куплено!');
-            } else {
-                showAchievement('❌ Недостаточно очков!');
-            }
-        }
-
-        // Автокликер
-        function startAutoClicker() {
-            if (autoClickInterval) {
-                clearInterval(autoClickInterval);
-            }
-            
-            autoClickInterval = setInterval(() => {
-                if (autoClicker > 0) {
-                    score += autoClicker;
-                    updateUI();
-                    checkLevelUp();
-                }
-            }, 1000);
-        }
-
-        function stopAutoClicker() {
-            if (autoClickInterval) {
-                clearInterval(autoClickInterval);
-                autoClickInterval = null;
-            }
-        }
-
-        // Сохранение игры
-        function saveGame() {
-            const gameData = {
-                score,
-                clickPower,
-                level,
-                autoClicker,
-                upgrades,
-                maxScore,
-                maxLevel
-            };
-            localStorage.setItem('clickerGame', JSON.stringify(gameData));
-            showAchievement('💾 Игра сохранена!');
-        }
-
-        // Загрузка игры
-        function loadGame() {
-            const saved = localStorage.getItem('clickerGame');
-            if (saved) {
-                const gameData = JSON.parse(saved);
-                score = gameData.score || 0;
-                clickPower = gameData.clickPower || 1;
-                level = gameData.level || 1;
-                autoClicker = gameData.autoClicker || 0;
-                maxScore = gameData.maxScore || 0;
-                maxLevel = gameData.maxLevel || 1;
-                
-                if (gameData.upgrades) {
-                    Object.keys(upgrades).forEach(key => {
-                        if (gameData.upgrades[key]) {
-                            upgrades[key].cost = gameData.upgrades[key].cost;
-                        }
-                    });
-                }
-                
-                updateUI();
-                showAchievement('🎮 Игра загружена!');
-            }
-        }
-
-        // Сброс игры
-        function resetGame() {
-            if (confirm('Вы уверены, что хотите сбросить весь прогресс?')) {
-                score = 0;
-                clickPower = 1;
-                level = 1;
-                autoClicker = 0;
-                
-                // Сброс стоимости улучшений
-                upgrades.power.cost = 10;
-                upgrades.autoClicker.cost = 50;
-                upgrades.multiplier.cost = 100;
-                upgrades.megaBoost.cost = 500;
-                
-                stopAutoClicker();
-                
-                localStorage.removeItem('clickerGame');
-                updateUI();
-                showAchievement('🔄 Игра сброшена!');
-            }
-        }
-
-        // Обработчики событий
-        clickArea.addEventListener('click', handleClick);
-        
-        document.getElementById('upgrade1').addEventListener('click', () => buyUpgrade('power'));
-        document.getElementById('upgrade2').addEventListener('click', () => buyUpgrade('autoClicker'));
-        document.getElementById('upgrade3').addEventListener('click', () => buyUpgrade('multiplier'));
-        document.getElementById('upgrade4').addEventListener('click', () => buyUpgrade('megaBoost'));
-        
-        document.getElementById('saveBtn').addEventListener('click', saveGame);
-        document.getElementById('resetBtn').addEventListener('click', resetGame);
 
         // Показать меню при загрузке
         showMenu();
