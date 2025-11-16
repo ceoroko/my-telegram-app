@@ -1,69 +1,260 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mini App</title>
+    <title>Игра-кликер</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
+
         .container {
             max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
+            width: 100%;
+            text-align: center;
         }
-        .card {
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stats {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .level {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .click-power {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .click-area {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
             padding: 30px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
+            margin-bottom: 25px;
             cursor: pointer;
-            margin: 5px;
-            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
-        button:hover {
-            background: #45a049;
+
+        .click-area:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.25);
         }
-        .user-info {
-            text-align: left;
-            margin-top: 20px;
-            padding: 15px;
+
+        .click-button {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, #FF6B6B, #FFD93D);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            user-select: none;
+        }
+
+        .upgrades {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .upgrade {
             background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .upgrade:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .upgrade:active {
+            transform: scale(0.95);
+        }
+
+        .upgrade h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .upgrade p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .cost {
+            color: #FFD700;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
             border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        .achievement {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border-left: 4px solid #FFD700;
+            animation: slideDown 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideDown {
+            0% {
+                top: -100px;
+                opacity: 0;
+            }
+            100% {
+                top: 20px;
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="card">
-            <h1>🛍️ Мой магазин</h1>
-            <p>Добро пожаловать в мини-приложение!</p>
-            
-            <button onclick="showAlert()">📢 Показать alert</button>
-            <button onclick="getUserData()">👤 Получить данные пользователя</button>
-            <button onclick="closeApp()">❌ Закрыть приложение</button>
+        <div class="header">
+            <h1>🚀 Кликер</h1>
+            <p>Нажимай на кнопку и улучшай свои возможности!</p>
         </div>
-        
-        <div id="userData" class="user-info" style="display: none;">
-            <h3>Информация о пользователе:</h3>
-            <div id="userInfo"></div>
+
+        <div class="stats">
+            <div class="score" id="score">0</div>
+            <div class="level">Уровень: <span id="level">1</span></div>
+            <div class="click-power">Сила клика: <span id="clickPower">1</span></div>
+        </div>
+
+        <div class="click-area" id="clickArea">
+            <div class="click-button" id="clickButton">КЛИК!</div>
+        </div>
+
+        <div class="upgrades">
+            <div class="upgrade" id="upgrade1">
+                <h3>💪 Усилитель</h3>
+                <p>+1 к силе клика</p>
+                <div class="cost" id="cost1">Стоимость: 10</div>
+            </div>
+            <div class="upgrade" id="upgrade2">
+                <h3>⚡ Автокликер</h3>
+                <p>Автоматические клики</p>
+                <div class="cost" id="cost2">Стоимость: 50</div>
+            </div>
+            <div class="upgrade" id="upgrade3">
+                <h3>🎯 Умножитель</h3>
+                <p>x2 к силе клика</p>
+                <div class="cost" id="cost3">Стоимость: 100</div>
+            </div>
+            <div class="upgrade" id="upgrade4">
+                <h3>🌟 Мега-буст</h3>
+                <p>x5 к силе клика</p>
+                <div class="cost" id="cost4">Стоимость: 500</div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button id="saveBtn">💾 Сохранить</button>
+            <button id="resetBtn">🔄 Сбросить</button>
         </div>
     </div>
 
@@ -71,40 +262,211 @@
         // Инициализация Telegram Web App
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
-        
-        // Основной цвет темы
-        Telegram.WebApp.setHeaderColor('#667eea');
-        Telegram.WebApp.setBackgroundColor('#667eea');
-        
-        function showAlert() {
-            Telegram.WebApp.showAlert('Привет от Telegram Mini App!');
+
+        // Игровые переменные
+        let score = 0;
+        let clickPower = 1;
+        let level = 1;
+        let autoClicker = 0;
+        let autoClickInterval = null;
+
+        // Стоимость улучшений
+        const upgrades = {
+            power: { cost: 10, increase: 1 },
+            autoClicker: { cost: 50, increase: 1 },
+            multiplier: { cost: 100, increase: 2 },
+            megaBoost: { cost: 500, increase: 5 }
+        };
+
+        // Элементы DOM
+        const scoreElement = document.getElementById('score');
+        const levelElement = document.getElementById('level');
+        const clickPowerElement = document.getElementById('clickPower');
+        const clickArea = document.getElementById('clickArea');
+        const clickButton = document.getElementById('clickButton');
+
+        // Функция обновления интерфейса
+        function updateUI() {
+            scoreElement.textContent = score;
+            levelElement.textContent = level;
+            clickPowerElement.textContent = clickPower;
+            
+            // Обновляем стоимость улучшений
+            document.getElementById('cost1').textContent = `Стоимость: ${upgrades.power.cost}`;
+            document.getElementById('cost2').textContent = `Стоимость: ${upgrades.autoClicker.cost}`;
+            document.getElementById('cost3').textContent = `Стоимость: ${upgrades.multiplier.cost}`;
+            document.getElementById('cost4').textContent = `Стоимость: ${upgrades.megaBoost.cost}`;
         }
-        
-        function getUserData() {
-            const user = Telegram.WebApp.initDataUnsafe.user;
-            if (user) {
-                document.getElementById('userInfo').innerHTML = `
-                    <p><strong>ID:</strong> ${user.id}</p>
-                    <p><strong>Имя:</strong> ${user.first_name}</p>
-                    <p><strong>Фамилия:</strong> ${user.last_name || 'Не указана'}</p>
-                    <p><strong>Username:</strong> @${user.username || 'Не указан'}</p>
-                    <p><strong>Язык:</strong> ${user.language_code || 'Не указан'}</p>
-                `;
-                document.getElementById('userData').style.display = 'block';
-            } else {
-                Telegram.WebApp.showAlert('Данные пользователя недоступны');
+
+        // Функция клика
+        function handleClick() {
+            score += clickPower;
+            createParticle(clickPower);
+            checkLevelUp();
+            updateUI();
+        }
+
+        // Создание партиклов (эффектов чисел)
+        function createParticle(value) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.textContent = `+${value}`;
+            particle.style.color = '#FFD700';
+            particle.style.left = `${clickArea.offsetLeft + clickArea.offsetWidth / 2}px`;
+            particle.style.top = `${clickArea.offsetTop + clickArea.offsetHeight / 2}px`;
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 1000);
+        }
+
+        // Проверка повышения уровня
+        function checkLevelUp() {
+            const newLevel = Math.floor(score / 100) + 1;
+            if (newLevel > level) {
+                level = newLevel;
+                showAchievement(`🎉 Достигнут уровень ${level}!`);
             }
         }
-        
-        function closeApp() {
-            Telegram.WebApp.close();
+
+        // Показать достижение
+        function showAchievement(text) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.textContent = text;
+            
+            document.body.appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
         }
+
+        // Функции улучшений
+        function buyUpgrade(type) {
+            const upgrade = upgrades[type];
+            
+            if (score >= upgrade.cost) {
+                score -= upgrade.cost;
+                
+                switch(type) {
+                    case 'power':
+                        clickPower += upgrade.increase;
+                        break;
+                    case 'autoClicker':
+                        autoClicker += upgrade.increase;
+                        startAutoClicker();
+                        break;
+                    case 'multiplier':
+                        clickPower *= upgrade.increase;
+                        break;
+                    case 'megaBoost':
+                        clickPower *= upgrade.increase;
+                        break;
+                }
+                
+                // Увеличиваем стоимость улучшения
+                upgrade.cost = Math.floor(upgrade.cost * 1.5);
+                
+                updateUI();
+                showAchievement('✅ Улучшение куплено!');
+            } else {
+                showAchievement('❌ Недостаточно очков!');
+            }
+        }
+
+        // Автокликер
+        function startAutoClicker() {
+            if (autoClickInterval) {
+                clearInterval(autoClickInterval);
+            }
+            
+            autoClickInterval = setInterval(() => {
+                if (autoClicker > 0) {
+                    score += autoClicker;
+                    updateUI();
+                    checkLevelUp();
+                }
+            }, 1000);
+        }
+
+        // Сохранение игры
+        function saveGame() {
+            const gameData = {
+                score,
+                clickPower,
+                level,
+                autoClicker,
+                upgrades
+            };
+            localStorage.setItem('clickerGame', JSON.stringify(gameData));
+            showAchievement('💾 Игра сохранена!');
+        }
+
+        // Загрузка игры
+        function loadGame() {
+            const saved = localStorage.getItem('clickerGame');
+            if (saved) {
+                const gameData = JSON.parse(saved);
+                score = gameData.score || 0;
+                clickPower = gameData.clickPower || 1;
+                level = gameData.level || 1;
+                autoClicker = gameData.autoClicker || 0;
+                
+                if (gameData.upgrades) {
+                    Object.keys(upgrades).forEach(key => {
+                        if (gameData.upgrades[key]) {
+                            upgrades[key].cost = gameData.upgrades[key].cost;
+                        }
+                    });
+                }
+                
+                startAutoClicker();
+                updateUI();
+                showAchievement('🎮 Игра загружена!');
+            }
+        }
+
+        // Сброс игры
+        function resetGame() {
+            if (confirm('Вы уверены, что хотите сбросить весь прогресс?')) {
+                score = 0;
+                clickPower = 1;
+                level = 1;
+                autoClicker = 0;
+                
+                // Сброс стоимости улучшений
+                upgrades.power.cost = 10;
+                upgrades.autoClicker.cost = 50;
+                upgrades.multiplier.cost = 100;
+                upgrades.megaBoost.cost = 500;
+                
+                if (autoClickInterval) {
+                    clearInterval(autoClickInterval);
+                    autoClickInterval = null;
+                }
+                
+                localStorage.removeItem('clickerGame');
+                updateUI();
+                showAchievement('🔄 Игра сброшена!');
+            }
+        }
+
+        // Обработчики событий
+        clickArea.addEventListener('click', handleClick);
         
-        // Показываем кнопку "Назад"
-        Telegram.WebApp.BackButton.show();
-        Telegram.WebApp.BackButton.onClick(() => {
-            Telegram.WebApp.close();
-        });
+        document.getElementById('upgrade1').addEventListener('click', () => buyUpgrade('power'));
+        document.getElementById('upgrade2').addEventListener('click', () => buyUpgrade('autoClicker'));
+        document.getElementById('upgrade3').addEventListener('click', () => buyUpgrade('multiplier'));
+        document.getElementById('upgrade4').addEventListener('click', () => buyUpgrade('megaBoost'));
+        
+        document.getElementById('saveBtn').addEventListener('click', saveGame);
+        document.getElementById('resetBtn').addEventListener('click', resetGame);
+
+        // Загрузка сохраненной игры при запуске
+        loadGame();
     </script>
 </body>
 </html>
